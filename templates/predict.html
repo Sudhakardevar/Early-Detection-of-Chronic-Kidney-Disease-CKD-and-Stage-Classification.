@@ -1,0 +1,126 @@
+{% extends 'main.html' %}
+
+{% block content %}
+    <style>
+        body {
+            background-image: url("{{ url_for('static', filename='images/kidney2.jpg') }}"); /* Replace 'Kidney.jpg' with your image filename */
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: #333; /* Dark text for good readability */
+            font-family: 'Arial', sans-serif; /* Simple and modern font */
+        }
+
+        .jumbotron {
+            background-color: rgb(253, 251, 251); /* Grey background with opacity */
+            color: #0b0b0a; /* White text for contrast */
+            border-radius: 10px;
+            padding: 30px;
+        }
+
+        .jumbotron h1 {
+            font-size: 2.5rem;
+            font-weight: bold;
+        }
+
+        .jumbotron p {
+            font-size: 1.2rem;
+        }
+
+        .health-tips {
+            background-color: #f7f7f7; /* Light grey background for tips section */
+            color: #333; /* Dark text for readability */
+            padding: 30px;
+            margin-top: 30px;
+            border-radius: 10px;
+        }
+
+        .health-tips h3 {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #8e8989; /* Darker grey for the header */
+        }
+
+        .health-tips ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+
+        .health-tips ul li {
+            font-size: 1.1rem;
+            margin: 10px 0;
+            line-height: 1.6;
+        }
+
+        .btn-warning {
+            background-color: #9ba3a0; /* Dark grey for call-to-action buttons */
+            border: none;
+            padding: 10px 20px;
+            font-size: 1.1rem;
+            border-radius: 5px;
+        }
+
+        .btn-warning:hover {
+            background-color: rgba(74, 72, 72, 0.85); /* Slightly darker grey on hover */
+        }
+
+        .btn-primary {
+            background-color: #3861dc; /* Darker grey for the primary button */
+            border: none;
+            padding: 10px 20px;
+            font-size: 1.1rem;
+            border-radius: 5px;
+        }
+
+        .btn-primary:hover {
+            background-color: #23272b; /* Darker grey on hover */
+        }
+    </style>
+
+    <div class="row" style="margin-bottom: 477px;">
+        <div class="col-md-3"></div>
+        <div class="col-md-6">
+            {% if pred == 1 %}
+                <div class="jumbotron">
+                    <h1 class="display-4">Kidney concerns detected, act early.</h1>
+                    <p class="lead">Please consult with a doctor immediately. It is important to get timely treatment and attention to your health.</p>
+                    <hr class="my-4">
+                    <p>Proper medical consultation is needed for further care.</p>
+                    <p class="lead">
+                        <a class="btn btn-warning btn-lg" href="{{ url_for('recommendationPage') }}" role="button">Prevention Steps</a>
+                    </p>
+                </div>
+            {% else %}
+                <div class="jumbotron">
+                    <h1 class="display-4">Great! You are Healthy</h1>
+                    <p class="lead">You are doing well! There are no signs of Kidney Disease. Keep maintaining a healthy lifestyle!</p>
+                    <hr class="my-4">
+                    <p>Take care of your health, as it’s the most valuable asset.</p>
+                </div>
+
+                <!-- Health Tips Section -->
+                <div class="health-tips">
+                    <h3>Health Tips for a Happy and Healthy Life</h3>
+                    <ul>
+                        <li><strong>Stay Hydrated:</strong> Drink at least 8-10 glasses of water daily to maintain optimal kidney function.</li>
+                        <li><strong>Eat a Balanced Diet:</strong> Include plenty of fruits, vegetables, and lean proteins in your meals to nourish your body.</li>
+                        <li><strong>Exercise Regularly:</strong> Aim for at least 30 minutes of physical activity daily to stay fit and energetic.</li>
+                        <li><strong>Get Enough Sleep:</strong> Ensure you get 7-9 hours of restful sleep each night for recovery and vitality.</li>
+                        <li><strong>Avoid Excess Salt:</strong> Limit salt intake to maintain healthy blood pressure and support kidney function.</li>
+                        <li><strong>Practice Stress Management:</strong> Manage stress through mindfulness practices like meditation or hobbies.</li>
+                        <li><strong>Maintain a Healthy Weight:</strong> Combine a balanced diet with regular exercise to keep your weight within a healthy range.</li>
+                        <li><strong>Limit Processed Foods:</strong> Cut down on sugary and processed foods to protect your overall health.</li>
+                        <li><strong>Avoid Smoking and Excess Alcohol:</strong> Quit smoking and limit alcohol to avoid long-term health risks.</li>
+                        <strong>Regular Health Check-Ups:</strong> Schedule regular check-ups with your doctor to monitor your health.
+                    </ul>
+                </div>
+            {% endif %}
+            <div class="row">
+                <div class="col-md-4"></div>
+                <div class="col-md-4"><a href="{{ url_for('home') }}" class="btn btn-block btn-primary">Back to Home</a></div>
+                <div class="col-md-4"></div>
+            </div>
+        </div>
+        <div class="col-md-3"></div>
+    </div>
+{% endblock %}

@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CKD Stages</title>
+    <style>
+        body {
+            background-image: url('/static/images/Kedney.jpg'), linear-gradient(135deg, #d6eaf8, #f4f6f7);
+            background-size: cover, 100% 100%;
+            background-attachment: fixed, scroll;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            font-size: 2.5em;
+            margin: 30px 0;
+        }
+
+        .container {
+            background-color: rgba(251, 249, 249, 0.85);
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            text-align: center;
+        }
+
+        label {
+            font-size: 1rem;
+            color: #333;
+        }
+
+        input[type="text"] {
+            width: 95%;
+            padding: 10px;
+            margin: 10px 0;
+            font-size: 1rem;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus {
+            border-color: #007BFF;
+        }
+
+        button {
+            background-color: #343a40;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+            width: 25%;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #495057;
+        }
+
+        p {
+            font-size: 1rem;
+            color: #555;
+        }
+
+        p strong {
+            color: #007BFF;
+        }
+
+        p.error {
+            color: red;
+            font-size: 0.9em;
+        }
+
+        .recommendations {
+            background-color: rgba(251, 249, 249, 0.85);
+            padding: 20px;
+            margin-top: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .recommendations h2 {
+            color: #333;
+            font-size: 2em;
+        }
+
+        .recommendations ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+
+        .recommendations ul li {
+            font-size: 1.2rem;
+            color: #555;
+            margin-bottom: 10px;
+        }
+
+        .back-button {
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 30px;
+            width: 20%;
+            text-align: center;
+            display: inline-block;
+            transition: background-color 0.3s;
+        }
+
+        .back-button:hover {
+            background-color: #0056b3;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Check Your CKD Stage</h1>
+        <form action="/calculate_stage" method="POST">
+            <label for="egfr">Enter your eGFR value:</label>
+            <input type="text" id="egfr" name="egfr" required>
+            <button type="submit">Submit</button>
+
+            <!-- Error message if the eGFR value is out of range -->
+            <span id="error-message" class="error"></span>
+        </form>
+
+        <!-- Display error message if any -->
+        {% if error_message %}
+            <p class="error">{{ error_message }}</p>
+        {% endif %}
+
+        <!-- Display CKD stage if calculated -->
+        {% if stage %}
+            <p>Your CKD Stage: <strong>{{ stage }}</strong></p>
+
+            <!-- Personalized Recommendations -->
+            <div class="recommendations">
+                <h2>Personalized Recommendations for You</h2>
+                <p><strong>Based on your CKD Stage {{ stage }}, we recommend the following:</strong></p>
+                <ul>
+                    {% if stage == 'Stage 1 - Normal Kidney Function' %}
+                        <li>Maintain a healthy diet low in sodium and saturated fats.</li>
+                        <li>Regular physical activity (30 minutes of moderate exercise most days).</li>
+                        <li>Monitor your kidney function regularly with your healthcare provider.</li>
+                    {% elif stage == 'Stage 2 - Mild Decrease in Kidney Function' %}
+                        <li>Reduce protein intake to avoid kidney strain.</li>
+                        <li>Consult with a nephrologist for a personalized treatment plan.</li>
+                        <li>Stay hydrated, but avoid excessive fluid intake.</li>
+                    {% elif stage == 'Stage 3 - Moderate Decrease in Kidney Function' %}
+                        <li>Start discussing dialysis options with your doctor if symptoms worsen.</li>
+                        <li>Strictly manage blood pressure and blood sugar levels.</li>
+                        <li>Regularly monitor electrolytes and kidney function.</li>
+                    {% elif stage == 'Stage 4 - Severe Decrease in Kidney Function' %}
+                        <li>Prepare for potential kidney transplantation or dialysis treatment.</li>
+                        <li>Adhere strictly to prescribed medications and dietary restrictions.</li>
+                        <li>Seek support from a renal dietitian.</li>
+                    {% elif stage == 'Stage 5 - Kidney Failure' %}
+                        <li>Immediate consultation with a nephrologist for dialysis or transplant options.</li>
+                        <li>Strict monitoring of all vital signs and lab results.</li>
+                        <li>Consider joining support groups for emotional and mental well-being.</li>
+                    {% else %}
+                        <li>Ensure you follow all the medical guidelines as prescribed by your healthcare provider.</li>
+                    {% endif %}
+                </ul>
+            </div>
+        {% endif %}
+
+        <!-- Back to Home Button -->
+        <a href="/" class="back-button">Back to Home</a>
+    </div>
+
+    <script>
+        // Validate the eGFR input value before form submission
+        document.querySelector('form').addEventListener('submit', function(event) {
+            var egfrValue = document.getElementById('egfr').value;
+            var errorMessage = document.getElementById('error-message');
+
+            // Check if the eGFR value is between 0 and 120
+            if (egfrValue < 0 || egfrValue > 120) {
+                event.preventDefault(); // Prevent form submission
+                errorMessage.textContent = "Please enter eGFR value between 0 and 120.";
+                errorMessage.style.color = "red"; // Ensure error message is red
+            } else {
+                errorMessage.textContent = ""; // Clear any previous error message
+            }
+        });
+    </script>
+</body>
+</html>

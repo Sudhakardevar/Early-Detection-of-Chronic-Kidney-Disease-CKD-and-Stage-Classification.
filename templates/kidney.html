@@ -1,0 +1,222 @@
+{% extends 'main.html' %}
+{% block content %}
+<style>
+    body {
+        background-image: url('/static/images/Kedney.jpg'); /* Update the path as per your file structure */
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+    }
+
+    input:hover {
+        background-color: #b6e2f1; /* Highlight color on hover */
+        border-color: #66afe9;
+        box-shadow: 0 0 5px rgba(102, 175, 233, 0.6);
+    }
+
+</style>
+<div class="row" style="margin-bottom: 125px;">
+    <div class="col-md-2"></div>
+    <div class="col-md-8">
+        <center><h1>Chronic Kidney Disease Predictor</h1></center>
+        <div class="card card-body" style="border-radius: 15px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); background-color: #f0f0f0; border: none;">
+            <form class="form-horizontal" action="{{ url_for('predictPage') }}" method="POST" onsubmit="return validateForm();">
+                <div class="row">
+                     <div class="col-md-4">
+                        <div class="form-group">
+                            <input id="age" class="form-control" type="text" name="age" placeholder="Age (in years)">
+                            <small class="text-muted">Range: 1 to 90 years.</small>
+                            <small id="error-age" class="text-danger"></small>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <input id="bp" class="form-control" type="text" name="bp" placeholder="BP (Systolic Blood Pressure)">
+                            <small class="text-muted">Range: 50 to 180 mmHg.</small>
+                            <small id="error-bp" class="text-danger"></small>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <input id="al" class="form-control" type="text" name="al" placeholder="Albumin (Protein in urine)">
+                            <small class="text-muted">Values:0 (normal) or 1-5 (abnormal).</small>
+                            <small id="error-al" class="text-danger"></small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <input id="su" class="form-control" type="text" name="su" placeholder="Sugar (Glucose in urine)">
+                            <small class="text-muted">Values:0 (normal) or 1-5 (abnormal).</small>
+                            <small id="error-su" class="text-danger"></small>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <input id="rbc" class="form-control" type="text" name="rbc" placeholder="RBC (Red Blood Cells in urine)">
+                            <small class="text-muted">Values: 0 (normal) or 1 (abnormal).</small>
+                            <small id="error-rbc" class="text-danger"></small>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <input id="pc" class="form-control" type="text" name="pc" placeholder="PUS (White cells in urine)">
+                            <small class="text-muted">Values: 0 (normal) or 1 (abnormal).</small>
+                            <small id="error-pc" class="text-danger"></small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <input id="pcc" class="form-control" type="text" name="pcc" placeholder="PUS Clumps (Cluster of pus cells)">
+                            <small class="text-muted">Values: 0 (not present) or 1 (present).</small>
+                            <small id="error-pcc" class="text-danger"></small>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <input id="ba" class="form-control" type="text" name="ba" placeholder="Bacteria (Bacteria in urine)">
+                            <small class="text-muted">Values: 0 (not present) or 1 (present).</small>
+                            <small id="error-ba" class="text-danger"></small>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <input id="bgr" class="form-control" type="text" name="bgr" placeholder="BGR (Random blood sugar)">
+                            <small class="text-muted">Range: 25 to 450 mg/dL.</small>
+                            <small id="error-bgr" class="text-danger"></small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <input id="bu" class="form-control" type="text" name="bu" placeholder="Blood Urea (Urea in blood)">
+                            <small class="text-muted">Range: 2 to 390 mg/dL.</small>
+                            <small id="error-bu" class="text-danger"></small>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <input id="sc" class="form-control" type="text" name="sc" placeholder="Serum Creatinine (Kidney waste level)">
+                            <small class="text-muted">Range: 0.4 to 70 mg/dL.</small>
+                            <small id="error-sc" class="text-danger"></small>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <input id="pot" class="form-control" type="text" name="pot" placeholder="Potassium (Potassium in blood)">
+                            <small class="text-muted">Range: 2.5 to 45 mEq/L.</small>
+                            <small id="error-pot" class="text-danger"></small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <input id="wc" class="form-control" type="text" name="wc" placeholder="WBC (White blood cell count)">
+                            <small class="text-muted">Range: 2200 to 26000 cells/μL.</small>
+                            <small id="error-wc" class="text-danger"></small>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <input id="htn" class="form-control" type="text" name="htn" placeholder="Hypertension (High blood pressure)">
+                            <small class="text-muted">Values: 0 (no) or 1 (yes).</small>
+                            <small id="error-htn" class="text-danger"></small>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <input id="dm" class="form-control" type="text" name="dm" placeholder="Diabetes Mellitus (High blood sugar)">
+                            <small class="text-muted">Values: 0 (no) or 1 (yes).</small>
+                            <small id="error-dm" class="text-danger"></small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <input id="cad" class="form-control" type="text" name="cad" placeholder="CAD (Coronary Artery Disease)">
+                            <small class="text-muted">Values: 0 (no) or 1 (yes).</small>
+                            <small id="error-cad" class="text-danger"></small>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <input id="pe" class="form-control" type="text" name="pe" placeholder="Pedal Edema (Foot swelling)">
+                            <small class="text-muted">Values: 0 (no) or 1 (yes).</small>
+                            <small id="error-pe" class="text-danger"></small>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <input id="ane" class="form-control" type="text" name="ane" placeholder="Anemia (Low red blood cells)">
+                            <small class="text-muted">Values: 0 (no) or 1 (yes).</small>
+                            <small id="error-ane" class="text-danger"></small>
+                        </div>
+                    </div>
+                </div>
+
+                <input type="submit" class="btn btn-dark btn-block" value="Predict">
+            </form>
+        </div>
+    </div>
+    <div class="col-md-2"></div>
+</div>
+
+<script>
+    function validateForm() {
+        const ranges = {
+            age: [1, 90],
+            bp: [50, 180],
+            al: [0, 5],
+            su: [0, 5],
+            rbc: [0, 1],
+            pc: [0, 1],
+            pcc: [0, 1],
+            ba: [0, 1],
+            bgr: [25, 450],
+            bu: [2, 390],
+            sc: [0.4, 70],
+            pot: [2.5, 45],
+            wc: [2200, 26000],
+            htn: [0, 1],
+            dm: [0, 1],
+            cad: [0, 1],
+            pe: [0, 1],
+            ane: [0, 1]
+        };
+
+        let isValid = true;
+
+        for (let field in ranges) {
+            const element = document.getElementById(field);
+            const errorElement = document.getElementById(`error-${field}`);
+            const value = element.value.trim();
+
+            errorElement.innerText = '';
+
+            if (value === "") {
+                errorElement.innerText = `${field.toUpperCase()} is required.`;
+                isValid = false;
+            } else {
+                const numberValue = parseFloat(value);
+                if (isNaN(numberValue) || numberValue < ranges[field][0] || numberValue > ranges[field][1]) {
+                    errorElement.innerText = `${field.toUpperCase()} should be between ${ranges[field][0]} and ${ranges[field][1]}.`;
+                    isValid = false;
+                }
+            }
+        }
+
+        return isValid;
+    }
+</script>
+{% endblock %}
